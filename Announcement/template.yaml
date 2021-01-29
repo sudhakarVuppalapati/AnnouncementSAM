@@ -15,14 +15,11 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: "title"
-          AttributeType: "S"
-        - AttributeName: "description"
-          AttributeType: "S"
-        - AttributeName: "date"
-          AttributeType: "S"
+      - AttributeName: "title"
+        AttributeType: "S"
+
       KeySchema:
-        AttributeName: "title"
+      - AttributeName: "title"
         KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: 5
