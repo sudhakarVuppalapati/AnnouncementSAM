@@ -11,12 +11,33 @@ Globals:
     Timeout: 3
 
 Resources:
+  AnnouncementsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "title"
+          AttributeType: "S"
+        - AttributeName: "description"
+          AttributeType: "S"
+        - AttributeName: "date"
+          AttributeType: "S"
+      KeySchema:
+        AttributeName: "title"
+        KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: hello_world/
       Handler: app.app1
       Runtime: python3.7
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              !Ref AnnouncementsTable
+
       Events:
         PostAnnouncements:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
