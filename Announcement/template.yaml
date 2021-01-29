@@ -14,6 +14,7 @@ Resources:
   AnnouncementsTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: Announcements
       AttributeDefinitions:
       - AttributeName: "title"
         AttributeType: "S"
