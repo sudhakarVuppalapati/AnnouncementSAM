@@ -11,6 +11,19 @@ Globals:
     Timeout: 3
 
 Resources:
+  AnnouncementsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "AnnouncementsTopic"
+      TopicName: "AnnouncementsTopic"
+
+  EmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: "sudhakartestaws@gmail.com"
+      Protocol: email
+      TopicArn: !Ref AnnouncementsTopic
+
   AnnouncementsTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -25,6 +38,7 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
+
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -35,6 +49,9 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName:
               !Ref AnnouncementsTable
+        - SNSPublishMessagePolicy:
+            TopicName: "AnnouncementsTopic"
+
 
       Events:
         PostAnnouncements:
