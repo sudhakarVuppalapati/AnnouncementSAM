@@ -8,3 +8,13 @@ s3_prefix = "Announcement"
 region = "us-west-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
+
+[Y]
+[Y.deploy]
+[Y.deploy.parameters]
+stack_name = "Announcement"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1l160fxuuavyz"
+s3_prefix = "Announcement"
+region = "us-west-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"

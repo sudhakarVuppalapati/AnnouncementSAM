@@ -39,7 +39,7 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
 
-  HelloWorldFunction:
+  HelloWorldFunction1:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: hello_world/
@@ -51,24 +51,49 @@ Resources:
               !Ref AnnouncementsTable
         - SNSPublishMessagePolicy:
             TopicName: "AnnouncementsTopic"
-
-
       Events:
         PostAnnouncements:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /announcements
             Method: post
         ListAnnouncements:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /announcements
             Method: get
         test:
           Type: Api
           Properties:
+            RestApiId: !Ref MyApi
             Path: /test
             Method: get
+  MyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+      Auth:
+        DefaultAuthorizer: MyLambdaRequestAuthorizer
+        Authorizers:
+          MyLambdaRequestAuthorizer:
+            FunctionPayloadType: REQUEST
+            FunctionArn: !GetAtt MyAuthFunction.Arn
+            Identity:
+              # Must specify at least one of
+              # Headers, QueryStrings, StageVariables, or Context
+              QueryStrings:
+                - auth
+              Headers:
+                - approval
+              ReauthorizeEvery: 100
+  MyAuthFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: ./authorizer
+      Handler: handler.authorizer
+      Runtime: nodejs10.x
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
@@ -76,10 +101,10 @@ Outputs:
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   HelloWorldApi:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/dev/hello/"
+  HelloWorldFunction1:
     Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
+    Value: !GetAtt HelloWorldFunction1.Arn
+  HelloWorldFunction1IamRole:
     Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+    Value: !GetAtt HelloWorldFunction1Role.Arn
