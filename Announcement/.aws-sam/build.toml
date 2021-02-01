@@ -6,6 +6,13 @@ codeuri = "hello_world/"
 runtime = "python3.7"
 source_md5 = ""
 packagetype = "Zip"
-functions = ["HelloWorldFunction"]
+functions = ["HelloWorldFunction1"]
+
+[function_build_definitions.6fc9d29b-c85a-49a2-852f-451388c77c20]
+codeuri = "./authorizer"
+runtime = "nodejs10.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["MyAuthFunction"]
 
 [layer_build_definitions]

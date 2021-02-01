@@ -56,20 +56,15 @@ Resources:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             RestApiId: !Ref MyApi
-            Path: /announcements
+            Path: /addannouncements
             Method: post
         ListAnnouncements:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
-            Path: /announcements
+            Path: /listannouncements
             Method: get
-        test:
-          Type: Api
-          Properties:
-            RestApiId: !Ref MyApi
-            Path: /test
-            Method: get
+
   MyApi:
     Type: AWS::Serverless::Api
     Properties:
