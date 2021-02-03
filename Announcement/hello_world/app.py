@@ -16,13 +16,6 @@ def put_addannouncements():
         data = response['Items']
         print(data)
         return json_response(data)
-    else:
-        print("request.data  : ", request.data)
-        json_object = json.loads(request.data)
-        print(json_object["title"])
-        table.put_item( Item= {"title": json_object["title"],"description":json_object["description"],"date":json_object["date"]})
-        response = clientSNS.publish( TopicArn="arn:aws:sns:us-west-1:774142313059:AnnouncementsTopic", Message=request.data,  Subject='test')
-        return json_response({"message": "student entry created"})
 
 @app1.route('/addannouncements', methods=['POST'])
 def put_listannouncements():
@@ -31,7 +24,7 @@ def put_listannouncements():
     print(json_object["title"])
     table.put_item( Item= {"title": json_object["title"],"description":json_object["description"],"date":json_object["date"]})
     response = clientSNS.publish( TopicArn="arn:aws:sns:us-west-1:774142313059:AnnouncementsTopic", Message=request.data,  Subject='test')
-    return json_response({"message": "student entry created"})
+    return json_response({"message": "announcements entry created"})
 
 def json_response(data, response_code=200):
     return json.dumps(data), response_code, {'Content-Type': 'application/json'}

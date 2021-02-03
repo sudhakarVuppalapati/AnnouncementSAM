@@ -3,7 +3,17 @@ version = 0.1
 [Y.deploy]
 [Y.deploy.parameters]
 stack_name = "Announcement"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-18bup639uy3it"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1q1g9rfbqu29x"
+s3_prefix = "Announcement"
+region = "us-west-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+
+[y]
+[y.deploy]
+[y.deploy.parameters]
+stack_name = "Announcement"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1vtdov2a2lgsm"
 s3_prefix = "Announcement"
 region = "us-west-1"
 confirm_changeset = true

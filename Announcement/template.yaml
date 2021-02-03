@@ -58,12 +58,15 @@ Resources:
             RestApiId: !Ref MyApi
             Path: /addannouncements
             Method: post
+
         ListAnnouncements:
           Type: Api
           Properties:
             RestApiId: !Ref MyApi
             Path: /listannouncements
             Method: get
+
+
 
   MyApi:
     Type: AWS::Serverless::Api
@@ -83,6 +86,7 @@ Resources:
               Headers:
                 - approval
               ReauthorizeEvery: 100
+
   MyAuthFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
