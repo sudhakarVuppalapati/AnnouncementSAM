@@ -9,16 +9,16 @@ dynamodb = boto3.resource("dynamodb", region_name="us-west-1")
 table = dynamodb.Table("Announcements")
 clientSNS = boto3.client('sns')
 
-@app1.route('/listannouncements', methods=['GET'])
-def put_addannouncements():
+@app1.route('/announcements', methods=['GET'])
+def listAnnouncements():
     if request.method == 'GET':
         response = table.scan()
         data = response['Items']
         print(data)
         return json_response(data)
 
-@app1.route('/addannouncements', methods=['POST'])
-def put_listannouncements():
+@app1.route('/announcements', methods=['POST'])
+def putAnnouncements():
     print("request.data  : ", request.data)
     json_object = json.loads(request.data)
     print(json_object["title"])
