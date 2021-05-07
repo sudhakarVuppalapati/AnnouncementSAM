@@ -31,8 +31,17 @@ def listAnnouncements():
 def putAnnouncements():
     print("request.data  : ", request.data)
     json_object = json.loads(request.data)
+    title = json_object["title"] 
+    description = json_object["description"]
+    if not  title.strip():
+        return json_response({"message": "announcements title should not be empty"},400)
+    if not  description.strip():
+        return json_response({"message": "announcements description should not be empty"},400)    
     print(json_object["title"])
-    table.put_item( Item= {"title": json_object["title"],"description":json_object["description"],"date":json_object["date"]})
+    dbResponse = table.put_item( Item= {"title":  title,"description": description,"date":json_object["date"]})
+    dbreturn = dbResponse.get("ResponseMetadata").get("HTTPStatusCode")
+    if dbreturn != "200" :
+        return json_response({"message": "please can you check with your data something went worng with DynamoDB insert data"},dbreturn) 
     response = clientSNS.publish( TopicArn=TopicArnvalue, Message=request.data,  Subject='test')
     return json_response({"message": "announcements entry created"})
 
