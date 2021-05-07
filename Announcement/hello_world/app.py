@@ -6,8 +6,18 @@ from flask import request
 
 app1 = FlaskLambda(__name__)
 dynamodb = boto3.resource("dynamodb", region_name="us-west-1")
-table = dynamodb.Table("Announcements")
+client = boto3.client('ssm')
+TableNameParameter  =  client.get_parameter(Name='TableName',  WithDecryption= False)
+TableNamevalue = TableNameParameter.get("Parameter").get("Value")
+print(TableNameParameter.get("Parameter").get("Value"))
+TopicArnParameter =  client.get_parameter(Name='TopicArn',  WithDecryption= False)
+TopicArnvalue = TopicArnParameter.get("Parameter").get("Value")
+print(TopicArnParameter.get("Parameter").get("Value"))
+
+table = dynamodb.Table(TableNamevalue)
 clientSNS = boto3.client('sns')
+
+
 
 @app1.route('/announcements', methods=['GET'])
 def listAnnouncements():
@@ -23,7 +33,7 @@ def putAnnouncements():
     json_object = json.loads(request.data)
     print(json_object["title"])
     table.put_item( Item= {"title": json_object["title"],"description":json_object["description"],"date":json_object["date"]})
-    response = clientSNS.publish( TopicArn="arn:aws:sns:us-west-1:774142313059:AnnouncementsTopic", Message=request.data,  Subject='test')
+    response = clientSNS.publish( TopicArn=TopicArnvalue, Message=request.data,  Subject='test')
     return json_response({"message": "announcements entry created"})
 
 def json_response(data, response_code=200):

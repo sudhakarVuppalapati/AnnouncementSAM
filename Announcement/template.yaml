@@ -9,7 +9,9 @@ Description: >
 Globals:
   Function:
     Timeout: 3
-
+Parameters: 
+    Stage: 
+      Type: String
 Resources:
   AnnouncementsTopic:
     Type: AWS::SNS::Topic
@@ -20,7 +22,7 @@ Resources:
   EmailSubscription:
     Type: AWS::SNS::Subscription
     Properties:
-      Endpoint: "sudhakartestaws@gmail.com"
+      Endpoint: "sudhavuppalapati@gmail.com"
       Protocol: email
       TopicArn: !Ref AnnouncementsTopic
 
@@ -47,10 +49,13 @@ Resources:
       Runtime: python3.7
       Policies:
         - DynamoDBCrudPolicy:
-            TableName:
-              !Ref AnnouncementsTable
+            TableName: !Ref AnnouncementsTable
         - SNSPublishMessagePolicy:
             TopicName: "AnnouncementsTopic"
+        - SSMParameterReadPolicy: 
+            ParameterName: !Ref TableName
+        - SSMParameterReadPolicy: 
+            ParameterName: !Ref TopicArn
       Events:
         PostAnnouncements:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -71,7 +76,14 @@ Resources:
   MyApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: dev
+      StageName: !Ref Stage
+      CacheClusterEnabled: true
+      CacheClusterSize: '0.5'
+      MethodSettings:
+        - CachingEnabled: false
+          CacheTtlInSeconds: 0
+          HttpMethod: '*'
+          ResourcePath: '/*'
       Auth:
         DefaultAuthorizer: MyLambdaRequestAuthorizer
         Authorizers:
@@ -85,7 +97,7 @@ Resources:
                 - auth
               Headers:
                 - approval
-              ReauthorizeEvery: 100
+              # ReauthorizeEvery: 100
 
   MyAuthFunction:
     Type: 'AWS::Serverless::Function'
@@ -93,14 +105,28 @@ Resources:
       CodeUri: ./authorizer
       Handler: handler.authorizer
       Runtime: nodejs10.x
-
+      
+  TableName:
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: "TableName"
+      Type: String
+      Value: !Ref AnnouncementsTable
+      
+  TopicArn:
+    Type: 'AWS::SSM::Parameter'
+    Properties:
+      Name: "TopicArn"
+      Type: String
+      Value: !Ref AnnouncementsTopic    
+      
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   HelloWorldApi:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/dev/hello/"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/hello/"
   HelloWorldFunction1:
     Description: "Hello World Lambda Function ARN"
     Value: !GetAtt HelloWorldFunction1.Arn

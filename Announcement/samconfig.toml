@@ -2,9 +2,10 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "Announcement"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1l160fxuuavyz"
-s3_prefix = "Announcement"
+stack_name = "test2"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1c38d12njua73"
+s3_prefix = "test2"
 region = "us-west-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Stage=\"second\""
