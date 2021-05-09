@@ -40,7 +40,9 @@ def putAnnouncements():
     print(json_object["title"])
     dbResponse = table.put_item( Item= {"title":  title,"description": description,"date":json_object["date"]})
     dbreturn = dbResponse.get("ResponseMetadata").get("HTTPStatusCode")
-    if dbreturn != "200" :
+    print(dbreturn)
+    print( dbreturn == 200)
+    if dbreturn != 200 :
         return json_response({"message": "please can you check with your data something went worng with DynamoDB insert data"},dbreturn) 
     response = clientSNS.publish( TopicArn=TopicArnvalue, Message=request.data,  Subject='test')
     return json_response({"message": "announcements entry created"})
