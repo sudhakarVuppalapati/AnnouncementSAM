@@ -4,7 +4,10 @@ phases:
   install:
     commands:
       - pip install -r requirements.txt -t app
-
+      - zip -r hello_world.zip ./hello_world
+      - zip -r authorizer.zip ./authorizer
+      - ls l
+      - aws s3 cp ./ s3://testmindtreelambda/lambda/ --recursive 
 artifacts:
   base-directory: app
   files:
