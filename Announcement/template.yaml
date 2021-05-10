@@ -98,7 +98,7 @@ Resources:
               Headers:
                 - approval
               # ReauthorizeEvery: 100
-
+ 
   MyAuthFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
